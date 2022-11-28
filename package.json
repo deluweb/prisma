@@ -6,7 +6,7 @@
   "scripts": {
     "db:introspect": "dotenv -- prisma introspect",
     "db:generate": "dotenv -- prisma generate",
-    "postinstall": "tsc && shx cp src/index.d.ts dist/index.d.ts && npx prisma@4.6.1 generate",
+    "postinstall": "tsc && npx shx cp src/index.d.ts dist/index.d.ts && npx prisma@4.6.1 generate",
     "test": "exit 0"
   },
   "publishConfig": {
