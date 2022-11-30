@@ -1,13 +1,13 @@
 {
   "name": "@deluweb/prisma",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
     "db:introspect": "dotenv -- prisma introspect",
     "db:generate": "dotenv -- prisma generate",
     "deploy":"npm install && git add . && git commit -m 'new release' && git push",
-    "postinstall": "tsc && npx prisma@4.6.1 generate",
+    "postinstall": "tsc && npx shx cp src/index.d.ts dist/index.d.ts && npx prisma@4.6.1 generate",
     "test": "exit 0"
   },
   "publishConfig": {
