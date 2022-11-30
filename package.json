@@ -2,6 +2,7 @@
   "name": "@deluweb/prisma",
   "version": "1.0.4",
   "description": "",
+  "type": "module",
   "main": "src/index.ts",
   "scripts": {
     "db:introspect": "dotenv -- prisma introspect",
