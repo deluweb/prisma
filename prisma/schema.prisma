@@ -20,10 +20,9 @@ model Account {
 }
 
 model Session {
-  id        String   @id
+  token     String @id
   expires   DateTime
   createdAt DateTime @default(now())
-  token     String
   tokenType String?
   updatedAt DateTime
 
