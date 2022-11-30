@@ -41,8 +41,8 @@ model User {
 
   Website   Website   @relation(fields: [websiteId], references: [id])
 
-  Account   Account[]
-  Session   Session[]
+  Accounts   Account[]
+  Sessions   Session[]
 
   @@unique([websiteId, email])
 }
@@ -54,5 +54,5 @@ model Website {
   updatedAt DateTime
 
   domains   String[]
-  User      User[]
+  Users      User[]
 }
