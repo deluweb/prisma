@@ -24,7 +24,7 @@ model Session {
   expires   DateTime
   createdAt DateTime @default(now())
   token     String
-  tokenType String
+  tokenType String?
   updatedAt DateTime
   User      User     @relation(fields: [userId], references: [id])
 }
