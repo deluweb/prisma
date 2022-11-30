@@ -1,9 +1,15 @@
 {
-    "compilerOptions": {
-      "sourceMap": true,
-      "outDir": "dist",
-      "strict": true,
-      "lib": ["esnext"],
-      "esModuleInterop": true
-    }
-  }
+	"compilerOptions": {
+		"target": "es6",
+		"lib": ["es2016"],
+		"outDir": "dist",
+		"module": "commonjs",
+		"declaration": true,
+		"removeComments": true,
+		"moduleResolution": "node",
+		"paths": {
+			"*": ["/*.d.ts"]
+		}
+	},
+	"include": ["src/**/*"]
+}
