@@ -8,15 +8,15 @@ datasource db {
 }
 
 model Account {
+  id        String   @id @default(cuid())
   email    String
   provider String
   token    String
 
-  websiteId String
-  userEmail String
-  User      User   @relation(fields: [websiteId, email], references: [websiteId, email])
+  userId String
+  User      User   @relation(fields: [userId], references: [id])
 
-  @@id([provider, email])
+  @@unique([provider, email])
 }
 
 model Session {
@@ -27,12 +27,12 @@ model Session {
   tokenType String?
   updatedAt DateTime
 
-  websiteId String
-  userEmail String
-  User      User     @relation(fields: [websiteId,userEmail], references: [websiteId, email])
+  userId String
+  User      User     @relation(fields: [userId], references: [id])
 }
 
 model User {
+  id        String   @id @default(cuid())
   name      String
   email     String
   image     String?
@@ -44,7 +44,7 @@ model User {
   Account   Account[]
   Session   Session[]
 
-  @@id([websiteId, email])
+  @@unique([websiteId, email])
 }
 
 model Website {
