@@ -50,7 +50,7 @@ model Website {
   id        String   @id
   name      String   @unique
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @default(now())
 
   domains   String[]
   Users      User[]
