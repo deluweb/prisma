@@ -7,51 +7,99 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Account {
-  id        String   @id @default(cuid())
-  email    String
-  provider String
-  token    String
-
-  userId String
-  User      User   @relation(fields: [userId], references: [id])
-
-  @@unique([provider, email])
-}
-
-model Session {
-  token     String @id
-  expires   DateTime
-  createdAt DateTime @default(now())
-  tokenType String?
-  updatedAt DateTime @default(now())
-
-  userId String
-  User      User     @relation(fields: [userId], references: [id])
-}
-
-model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  image     String?
-  role      String @default("USER")
-  websiteId String
-
-  Website   Website   @relation(fields: [websiteId], references: [id])
-
-  Accounts   Account[]
-  Sessions   Session[]
-
-  @@unique([websiteId, email])
-}
-
 model Website {
-  id        String   @id
+  id        String   @id @default(cuid())
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  domains   String[]
+  domains String[]
+  Users   User[]
+}
+
+model User {
+  id        String @id @default(cuid())
+  FirstName String
+  LastName  String
+  email     String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  websiteId String
+  Website   Website @relation(fields: [websiteId], references: [id])
+
+  Accounts         Account[]
+  Sessions         Session[]
+  Roles            Role[]
+  LibaryDevelopers LibaryDeveloper[]
+
+  @@unique([websiteId, email])
+}
+
+model Account {
+  id        String  @id @default(cuid())
+  login     String
+  provider  String
+  token     String
+  tokenType String?
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id])
+
+  @@unique([provider, login])
+}
+
+model Role {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
   Users      User[]
+  Permisions Permission[]
+}
+
+model Libary {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  Permisions Permission[]
+  Developers LibaryDeveloper[]
+}
+
+model LibaryDeveloper {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id])
+
+  libaryId  String
+  Developer Libary @relation(fields: [libaryId], references: [id])
+}
+
+model Permission {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  libaryId String
+  Libary   Libary @relation(fields: [libaryId], references: [id])
+
+  Roles Role[]
+}
+
+model Session {
+  token     String   @id
+  expires   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id])
 }
