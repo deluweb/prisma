@@ -18,9 +18,10 @@ model Website {
 }
 
 model User {
-  id        String @id @default(cuid())
-  FirstName String
-  LastName  String
+  id        String  @id @default(cuid())
+  username  String
+  firstName String?
+  lastName  String?
   email     String
 
   createdAt DateTime @default(now())
