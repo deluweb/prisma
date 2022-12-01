@@ -13,16 +13,87 @@ model Website {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  domains String[]
-  Users   User[]
+  domains         String[]
+  Users           User[]
+  WebsiteProvider WebsiteProvider[]
+  WebsiteTheme    WebsiteTheme[]
+  WebsitePlugin   WebsitePlugin[]
+  Roles           Role[]
+}
+
+model WebsiteProvider {
+  id            String  @id @default(cuid())
+  loginProvider Boolean
+  enabled       Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  websiteId  String
+  website    Website  @relation(fields: [websiteId], references: [id])
+  providerId String
+  provider   Provider @relation(fields: [providerId], references: [id])
+
+  Accounts Account[]
+  Tokens   WebsiteProviderValue[]
+
+  @@unique([websiteId, providerId])
+}
+
+model WebsiteProviderValue {
+  id    String @id @default(cuid())
+  key   String
+  value String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  websiteProviderId String
+  websiteProvider   WebsiteProvider @relation(fields: [websiteProviderId], references: [id])
+
+  @@unique([websiteProviderId, key])
+}
+
+model WebsiteTheme {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  websiteId String
+  website   Website @relation(fields: [websiteId], references: [id])
+
+  themeId String
+  theme   LibaryThemeVersion @relation(fields: [themeId], references: [id])
+
+  @@unique([websiteId, themeId])
+}
+
+model WebsitePlugin {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  websiteId String
+  website   Website @relation(fields: [websiteId], references: [id])
+
+  pluginId String
+  plugin   LibaryPluginVersion @relation(fields: [pluginId], references: [id])
+
+  @@unique([websiteId, pluginId])
+}
+
+model Provider {
+  id   String @id @default(cuid())
+  name String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  WebsiteProvider WebsiteProvider[]
 }
 
 model User {
-  id        String  @id @default(cuid())
-  username  String
-  firstName String?
-  lastName  String?
-  email     String
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -34,45 +105,143 @@ model User {
   Sessions         Session[]
   Roles            Role[]
   LibaryDevelopers LibaryDeveloper[]
-
-  @@unique([websiteId, email])
+  UserDataRecords  UserDataRecord[]
 }
 
-model Account {
-  id        String  @id @default(cuid())
-  login     String
-  provider  String
-  token     String
-  tokenType String?
+model UserDataRecord {
+  id    String @id @default(cuid())
+  key   String
+  value String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   userId String
   User   User   @relation(fields: [userId], references: [id])
 
-  @@unique([provider, login])
+  @@unique([userId, key])
+}
+
+model Account {
+  id    String @id @default(cuid())
+  token String
+
+  providerId String
+  Provider   WebsiteProvider @relation(fields: [providerId], references: [id])
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id])
+
+  AccountDataRecords AccountDataRecord[]
+
+  @@unique([providerId, token])
+}
+
+model AccountDataRecord {
+  id    String @id @default(cuid())
+  key   String
+  value String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  accountId String
+  Account   Account @relation(fields: [accountId], references: [id])
+
+  @@unique([accountId, key])
 }
 
 model Role {
-  id        String   @id @default(cuid())
-  name      String
+  id   String @id @default(cuid())
+  name String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
+  websiteId String
+  Website   Website @relation(fields: [websiteId], references: [id])
+
   Users      User[]
-  Permisions Permission[]
+  Permisions LibaryPermission[]
+
+  @@unique([websiteId, name])
 }
 
 model Libary {
-  id        String   @id @default(cuid())
-  name      String
+  id   String @id @default(cuid())
+  name String @unique
+  sub  String @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  Permisions Permission[]
   Developers LibaryDeveloper[]
+  Plugins    LibaryPlugin[]
+  Themes     LibaryTheme[]
+  Permisions LibaryPermissionVersion[]
+}
+
+model LibaryPlugin {
+  id   String @id @default(cuid())
+  name String @unique
+  sub  String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  libaryId String
+  Libary   Libary @relation(fields: [libaryId], references: [id])
+
+  Versions LibaryPluginVersion[]
+}
+
+model LibaryPluginVersion {
+  id      String @id @default(cuid())
+  version String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  pluginId String
+  Plugin   LibaryPlugin @relation(fields: [pluginId], references: [id])
+
+  WebsitePlugin WebsitePlugin[]
+
+  @@unique([pluginId, version])
+}
+
+model LibaryTheme {
+  id   String @id @default(cuid())
+  name String @unique
+  sub  String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  libaryId String
+  Libary   Libary @relation(fields: [libaryId], references: [id])
+
+  Versions LibaryThemeVersion[]
+}
+
+model LibaryThemeVersion {
+  id      String @id @default(cuid())
+  version String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  themeId String
+  Theme   LibaryTheme @relation(fields: [themeId], references: [id])
+
+  WebsiteTheme WebsiteTheme[]
+
+  @@unique([themeId, version])
 }
 
 model LibaryDeveloper {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
@@ -81,23 +250,44 @@ model LibaryDeveloper {
 
   libaryId  String
   Developer Libary @relation(fields: [libaryId], references: [id])
+
+  @@unique([userId, libaryId])
 }
 
-model Permission {
-  id        String   @id @default(cuid())
-  name      String
+model LibaryPermissionVersion {
+  id      String @id @default(cuid())
+  version String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
   libaryId String
   Libary   Libary @relation(fields: [libaryId], references: [id])
 
+  Permisions LibaryPermission[]
+
+  @@unique([libaryId, version])
+}
+
+model LibaryPermission {
+  id   String @id @default(cuid())
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  permisionVersionId String
+  PermisionVersion   LibaryPermissionVersion @relation(fields: [permisionVersionId], references: [id])
+
   Roles Role[]
+
+  @@unique([permisionVersionId, name])
 }
 
 model Session {
-  token     String   @id
-  expires   DateTime
+  token   String   @id
+  expires DateTime
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
