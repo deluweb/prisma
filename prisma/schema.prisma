@@ -110,10 +110,11 @@ model UserDataRecord {
 }
 
 model Account {
-  id        String  @id @default(cuid())
-  token     String
-  tokenType String?
-  scope     String?
+  id         String  @id @default(cuid())
+  externalId String
+  token      String
+  tokenType  String?
+  scope      String?
 
   providerId String
   Provider   WebsiteProvider @relation(fields: [providerId], references: [id])
@@ -123,7 +124,7 @@ model Account {
 
   AccountDataRecords AccountDataRecord[]
 
-  @@unique([providerId, userId])
+  @@unique([providerId, externalId])
 }
 
 model AccountDataRecord {
