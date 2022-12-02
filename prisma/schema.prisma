@@ -22,10 +22,10 @@ model Website {
 }
 
 model WebsiteProvider {
-  id            String  @id @default(cuid())
+  id            String   @id @default(cuid())
   loginProvider Boolean
-  enabled       Boolean @default(true)
-  scope         String?
+  enabled       Boolean  @default(true)
+  scope         String[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
