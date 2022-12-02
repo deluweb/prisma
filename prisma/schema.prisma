@@ -123,23 +123,7 @@ model Account {
   userId String
   User   User   @relation(fields: [userId], references: [id])
 
-  AccountDataRecords AccountDataRecord[]
-
   @@unique([providerId, externalId])
-}
-
-model AccountDataRecord {
-  id    String @id @default(cuid())
-  key   String
-  value String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  accountId String
-  Account   Account @relation(fields: [accountId], references: [id])
-
-  @@unique([accountId, key])
 }
 
 model Role {
