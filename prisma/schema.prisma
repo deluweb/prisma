@@ -26,6 +26,7 @@ model WebsiteProvider {
   loginProvider Boolean
   enabled       Boolean  @default(true)
   scope         String[]
+  variables     Json
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -35,24 +36,9 @@ model WebsiteProvider {
   providerId String
   provider   Provider @relation(fields: [providerId], references: [id])
 
-  Accounts Account[]
-  Tokens   WebsiteProviderValue[]
+  Accounts             Account[]
 
   @@unique([websiteId, providerId])
-}
-
-model WebsiteProviderValue {
-  id    String @id @default(cuid())
-  key   String
-  value String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  websiteProviderId String
-  websiteProvider   WebsiteProvider @relation(fields: [websiteProviderId], references: [id])
-
-  @@unique([websiteProviderId, key])
 }
 
 model WebsiteTheme {
