@@ -110,11 +110,12 @@ model UserDataRecord {
 }
 
 model Account {
-  id         String  @id @default(cuid())
-  externalId String
-  token      String
-  tokenType  String?
-  scope      String?
+  id           String  @id @default(cuid())
+  externalId   String
+  externalData Json?
+  token        String
+  tokenType    String?
+  scope        String?
 
   providerId String
   Provider   WebsiteProvider @relation(fields: [providerId], references: [id])
