@@ -113,7 +113,7 @@ model Account {
   id           String  @id @default(cuid())
   externalId   String
   externalData Json?
-  token        String
+  token        String?
   tokenType    String?
   scope        String?
 
