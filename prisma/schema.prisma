@@ -116,7 +116,7 @@ model Account {
   externalData Json?
   token        String?
   tokenType    String?
-  scope        String?
+  scope        String[]
 
   providerId String
   Provider   WebsiteProvider @relation(fields: [providerId], references: [id])
