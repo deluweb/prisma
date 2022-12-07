@@ -8,8 +8,8 @@ datasource db {
 }
 
 model Website {
-  id        String   @id @default(cuid())
-  name      String   @unique
+  id   String @id @default(cuid())
+  name String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -128,9 +128,12 @@ model Account {
 }
 
 model Role {
-  id   String @id @default(cuid())
-  name String
-  redirect_uri String @default("/")
+  id           String  @id @default(cuid())
+  name         String
+  redirect_uri String  @default("/")
+  weight       Int     @default(0)
+  default      Boolean
+  locked       Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -142,6 +145,7 @@ model Role {
   Permisions LibaryPermission[]
 
   @@unique([websiteId, name])
+  @@unique([websiteId, weight])
 }
 
 model Libary {
