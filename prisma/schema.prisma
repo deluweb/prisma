@@ -51,7 +51,7 @@ model WebsiteTheme {
   website   Website @relation(fields: [websiteId], references: [id])
 
   themeId String
-  theme   LibaryThemeVersion @relation(fields: [themeId], references: [id])
+  theme   LibraryThemeVersion @relation(fields: [themeId], references: [id])
 
   @@unique([websiteId, themeId])
 }
@@ -65,7 +65,7 @@ model WebsitePlugin {
   website   Website @relation(fields: [websiteId], references: [id])
 
   pluginId String
-  plugin   LibaryPluginVersion @relation(fields: [pluginId], references: [id])
+  plugin   LibraryPluginVersion @relation(fields: [pluginId], references: [id])
 
   @@unique([websiteId, pluginId])
 }
@@ -92,7 +92,7 @@ model User {
   Accounts         Account[]
   Sessions         Session[]
   Roles            Role[]
-  LibaryDevelopers LibaryDeveloper[]
+  LibaryDevelopers LibraryDeveloper[]
   UserDataRecords  UserDataRecord[]
 }
 
@@ -142,13 +142,13 @@ model Role {
   Website   Website @relation(fields: [websiteId], references: [id])
 
   Users      User[]
-  Permisions LibaryPermission[]
+  Permisions LibraryPermission[]
 
   @@unique([websiteId, name])
   @@unique([websiteId, weight])
 }
 
-model Libary {
+model Library {
   id   String @id @default(cuid())
   name String @unique
   sub  String @unique
@@ -156,13 +156,13 @@ model Libary {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  Developers LibaryDeveloper[]
-  Plugins    LibaryPlugin[]
-  Themes     LibaryTheme[]
-  Permisions LibaryPermissionVersion[]
+  Developers LibraryDeveloper[]
+  Plugins    LibraryPlugin[]
+  Themes     LibraryTheme[]
+  Permisions LibraryPermissionVersion[]
 }
 
-model LibaryPlugin {
+model LibraryPlugin {
   id   String @id @default(cuid())
   name String @unique
   sub  String @unique
@@ -171,12 +171,12 @@ model LibaryPlugin {
   updatedAt DateTime @default(now())
 
   libaryId String
-  Libary   Libary @relation(fields: [libaryId], references: [id])
+  Libary   Library @relation(fields: [libaryId], references: [id])
 
-  Versions LibaryPluginVersion[]
+  Versions LibraryPluginVersion[]
 }
 
-model LibaryPluginVersion {
+model LibraryPluginVersion {
   id      String @id @default(cuid())
   version String
 
@@ -184,14 +184,14 @@ model LibaryPluginVersion {
   updatedAt DateTime @default(now())
 
   pluginId String
-  Plugin   LibaryPlugin @relation(fields: [pluginId], references: [id])
+  Plugin   LibraryPlugin @relation(fields: [pluginId], references: [id])
 
   WebsitePlugin WebsitePlugin[]
 
   @@unique([pluginId, version])
 }
 
-model LibaryTheme {
+model LibraryTheme {
   id   String @id @default(cuid())
   name String @unique
   sub  String @unique
@@ -200,12 +200,12 @@ model LibaryTheme {
   updatedAt DateTime @default(now())
 
   libaryId String
-  Libary   Libary @relation(fields: [libaryId], references: [id])
+  Libary   Library @relation(fields: [libaryId], references: [id])
 
-  Versions LibaryThemeVersion[]
+  Versions LibraryThemeVersion[]
 }
 
-model LibaryThemeVersion {
+model LibraryThemeVersion {
   id      String @id @default(cuid())
   version String
 
@@ -213,14 +213,14 @@ model LibaryThemeVersion {
   updatedAt DateTime @default(now())
 
   themeId String
-  Theme   LibaryTheme @relation(fields: [themeId], references: [id])
+  Theme   LibraryTheme @relation(fields: [themeId], references: [id])
 
   WebsiteTheme WebsiteTheme[]
 
   @@unique([themeId, version])
 }
 
-model LibaryDeveloper {
+model LibraryDeveloper {
   id String @id @default(cuid())
 
   createdAt DateTime @default(now())
@@ -230,12 +230,12 @@ model LibaryDeveloper {
   User   User   @relation(fields: [userId], references: [id])
 
   libaryId  String
-  Developer Libary @relation(fields: [libaryId], references: [id])
+  Developer Library @relation(fields: [libaryId], references: [id])
 
   @@unique([userId, libaryId])
 }
 
-model LibaryPermissionVersion {
+model LibraryPermissionVersion {
   id      String @id @default(cuid())
   version String
 
@@ -243,14 +243,14 @@ model LibaryPermissionVersion {
   updatedAt DateTime @default(now())
 
   libaryId String
-  Libary   Libary @relation(fields: [libaryId], references: [id])
+  Libary   Library @relation(fields: [libaryId], references: [id])
 
-  Permisions LibaryPermission[]
+  Permisions LibraryPermission[]
 
   @@unique([libaryId, version])
 }
 
-model LibaryPermission {
+model LibraryPermission {
   id   String @id @default(cuid())
   name String
 
@@ -258,7 +258,7 @@ model LibaryPermission {
   updatedAt DateTime @default(now())
 
   permisionVersionId String
-  PermisionVersion   LibaryPermissionVersion @relation(fields: [permisionVersionId], references: [id])
+  PermisionVersion   LibraryPermissionVersion @relation(fields: [permisionVersionId], references: [id])
 
   Roles Role[]
 
