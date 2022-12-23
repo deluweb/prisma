@@ -92,7 +92,7 @@ model User {
   Accounts         Account[]
   Sessions         Session[]
   Roles            Role[]
-  LibaryDevelopers LibraryDeveloper[]
+  LibraryDevelopers LibraryDeveloper[]
   UserDataRecords  UserDataRecord[]
 }
 
@@ -170,8 +170,8 @@ model LibraryPlugin {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  libaryId String
-  Libary   Library @relation(fields: [libaryId], references: [id])
+  libraryId String
+  Library   Library @relation(fields: [libraryId], references: [id])
 
   Versions LibraryPluginVersion[]
 }
@@ -199,8 +199,8 @@ model LibraryTheme {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  libaryId String
-  Libary   Library @relation(fields: [libaryId], references: [id])
+  libraryId String
+  Library   Library @relation(fields: [libraryId], references: [id])
 
   Versions LibraryThemeVersion[]
 }
@@ -229,10 +229,10 @@ model LibraryDeveloper {
   userId String
   User   User   @relation(fields: [userId], references: [id])
 
-  libaryId  String
-  Developer Library @relation(fields: [libaryId], references: [id])
+  libraryId  String
+  Library Library @relation(fields: [libraryId], references: [id])
 
-  @@unique([userId, libaryId])
+  @@unique([userId, libraryId])
 }
 
 model LibraryPermissionVersion {
@@ -242,12 +242,12 @@ model LibraryPermissionVersion {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  libaryId String
-  Libary   Library @relation(fields: [libaryId], references: [id])
+  libraryId String
+  Library   Library @relation(fields: [libraryId], references: [id])
 
   Permisions LibraryPermission[]
 
-  @@unique([libaryId, version])
+  @@unique([libraryId, version])
 }
 
 model LibraryPermission {
