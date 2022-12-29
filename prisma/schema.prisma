@@ -8,270 +8,224 @@ datasource db {
 }
 
 model Website {
-  id   String @id @default(cuid())
-  name0 String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
+  id              String            @id @default(cuid())
+  name            String            @unique
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now())
   domains         String[]
+  Roles           Role[]
   Users           User[]
+  WebsitePlugin   WebsitePlugin[]
   WebsiteProvider WebsiteProvider[]
   WebsiteTheme    WebsiteTheme[]
-  WebsitePlugin   WebsitePlugin[]
-  Roles           Role[]
 }
 
 model WebsiteProvider {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   loginProvider Boolean
-  enabled       Boolean  @default(true)
+  enabled       Boolean   @default(true)
   scope         String[]
   variables     Json
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  websiteId  String
-  website    Website  @relation(fields: [websiteId], references: [id])
-  providerId String
-  provider   Provider @relation(fields: [providerId], references: [id])
-
-  Accounts Account[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now())
+  websiteId     String
+  providerId    String
+  Accounts      Account[]
+  provider      Provider  @relation(fields: [providerId], references: [id])
+  website       Website   @relation(fields: [websiteId], references: [id])
 
   @@unique([websiteId, providerId])
 }
 
 model WebsiteTheme {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
+  id        String              @id @default(cuid())
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @default(now())
   websiteId String
-  website   Website @relation(fields: [websiteId], references: [id])
-
-  themeId String
-  theme   LibraryThemeVersion @relation(fields: [themeId], references: [id])
+  themeId   String
+  theme     LibraryThemeVersion @relation(fields: [themeId], references: [id])
+  website   Website             @relation(fields: [websiteId], references: [id])
 
   @@unique([websiteId, themeId])
 }
 
 model WebsitePlugin {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
+  id        String               @id @default(cuid())
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @default(now())
   websiteId String
-  website   Website @relation(fields: [websiteId], references: [id])
-
-  pluginId String
-  plugin   LibraryPluginVersion @relation(fields: [pluginId], references: [id])
+  pluginId  String
+  plugin    LibraryPluginVersion @relation(fields: [pluginId], references: [id])
+  website   Website              @relation(fields: [websiteId], references: [id])
 
   @@unique([websiteId, pluginId])
 }
 
 model Provider {
-  id   String @id @default(cuid())
-  name1 String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
+  id              String            @id @default(cuid())
+  name            String            @unique
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now())
   WebsiteProvider WebsiteProvider[]
 }
 
 model User {
-  id String @id @default(cuid())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  websiteId String
-  Website   Website @relation(fields: [websiteId], references: [id])
-
-  Accounts         Account[]
-  Sessions         Session[]
-  Roles            Role[]
+  id                String             @id @default(cuid())
+  websiteId         String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @default(now())
+  Accounts          Account[]
   LibraryDevelopers LibraryDeveloper[]
-  UserDataRecords  UserDataRecord[]
+  Sessions          Session[]
+  Website           Website            @relation(fields: [websiteId], references: [id])
+  UserDataRecords   UserDataRecord[]
+  Roles             Role[]             @relation("RoleToUser")
 }
 
 model UserDataRecord {
-  id    String @id @default(cuid())
-  key   String
-  value String
-
+  id        String   @id @default(cuid())
+  key       String
+  value     String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-
-  userId String
-  User   User   @relation(fields: [userId], references: [id])
+  userId    String
+  User      User     @relation(fields: [userId], references: [id])
 
   @@unique([userId, key])
 }
 
 model Account {
-  id           String  @id @default(cuid())
-  externalId   String
-  externalData Json?
+  id           String          @id @default(cuid())
   token        String?
+  userId       String
+  providerId   String
+  externalId   String
   tokenType    String?
+  externalData Json?
   scope        String[]
-
-  providerId String
-  Provider   WebsiteProvider @relation(fields: [providerId], references: [id])
-
-  userId String
-  User   User   @relation(fields: [userId], references: [id])
+  Provider     WebsiteProvider @relation(fields: [providerId], references: [id])
+  User         User            @relation(fields: [userId], references: [id])
 
   @@unique([providerId, externalId])
 }
 
 model Role {
-  id           String  @id @default(cuid())
-  name2         String
-  redirect_uri String  @default("/")
-  weight       Int     @default(0)
+  id           String              @id @default(cuid())
+  name         String
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @default(now())
+  websiteId    String
   default      Boolean
-  locked       Boolean @default(false)
+  locked       Boolean             @default(false)
+  redirect_uri String              @default("/")
+  weight       Int                 @default(0)
+  Website      Website             @relation(fields: [websiteId], references: [id])
+  Permisions   LibraryPermission[] @relation("LibraryPermissionToRole")
+  Users        User[]              @relation("RoleToUser")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  websiteId String
-  Website   Website @relation(fields: [websiteId], references: [id])
-
-  Users      User[]
-  Permisions LibraryPermission[]
-
-  @@unique([websiteId, name2])
   @@unique([websiteId, weight])
+  @@unique([websiteId, name])
 }
 
 model Library {
-  id   String @id @default(cuid())
-  name3 String @unique
-  sub  String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
+  id         String                     @id @default(cuid())
+  name       String                     @unique
+  sub        String                     @unique
+  createdAt  DateTime                   @default(now())
+  updatedAt  DateTime                   @default(now())
   Developers LibraryDeveloper[]
+  Permisions LibraryPermissionVersion[]
   Plugins    LibraryPlugin[]
   Themes     LibraryTheme[]
-  Permisions LibraryPermissionVersion[]
 }
 
 model LibraryPlugin {
-  id   String @id @default(cuid())
-  name4 String @unique
-  sub  String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
+  id        String                 @id @default(cuid())
+  name      String                 @unique
+  sub       String                 @unique
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @default(now())
   libraryId String
-  Library   Library @relation(fields: [libraryId], references: [id])
-
-  Versions LibraryPluginVersion[]
+  Library   Library                @relation(fields: [libraryId], references: [id])
+  Versions  LibraryPluginVersion[]
 }
 
 model LibraryPluginVersion {
-  id      String @id @default(cuid())
-  version String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  pluginId String
-  Plugin   LibraryPlugin @relation(fields: [pluginId], references: [id])
-
+  id            String          @id @default(cuid())
+  version       String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+  pluginId      String
+  Plugin        LibraryPlugin   @relation(fields: [pluginId], references: [id])
   WebsitePlugin WebsitePlugin[]
 
   @@unique([pluginId, version])
 }
 
 model LibraryTheme {
-  id   String @id @default(cuid())
-  name5 String @unique
-  sub  String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
+  id        String                @id @default(cuid())
+  name      String                @unique
+  sub       String                @unique
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @default(now())
   libraryId String
-  Library   Library @relation(fields: [libraryId], references: [id])
-
-  Versions LibraryThemeVersion[]
+  Library   Library               @relation(fields: [libraryId], references: [id])
+  Versions  LibraryThemeVersion[]
 }
 
 model LibraryThemeVersion {
-  id      String @id @default(cuid())
-  version String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  themeId String
-  Theme   LibraryTheme @relation(fields: [themeId], references: [id])
-
+  id           String         @id @default(cuid())
+  version      String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @default(now())
+  themeId      String
+  Theme        LibraryTheme   @relation(fields: [themeId], references: [id])
   WebsiteTheme WebsiteTheme[]
 
   @@unique([themeId, version])
 }
 
 model LibraryDeveloper {
-  id String @id @default(cuid())
-
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-
-  userId String
-  User   User   @relation(fields: [userId], references: [id])
-
-  libraryId  String
-  Library Library @relation(fields: [libraryId], references: [id])
+  userId    String
+  libraryId String
+  Library   Library  @relation(fields: [libraryId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
 
   @@unique([userId, libraryId])
 }
 
 model LibraryPermissionVersion {
-  id      String @id @default(cuid())
-  version String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  libraryId String
-  Library   Library @relation(fields: [libraryId], references: [id])
-
+  id         String              @id @default(cuid())
+  version    String
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @default(now())
+  libraryId  String
   Permisions LibraryPermission[]
+  Library    Library             @relation(fields: [libraryId], references: [id])
 
   @@unique([libraryId, version])
 }
 
 model LibraryPermission {
-  id   String @id @default(cuid())
-  name6 String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
+  id                 String                   @id @default(cuid())
+  name               String
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @default(now())
   permisionVersionId String
   PermisionVersion   LibraryPermissionVersion @relation(fields: [permisionVersionId], references: [id])
+  Roles              Role[]                   @relation("LibraryPermissionToRole")
 
-  Roles Role[]
-
-  @@unique([permisionVersionId, name6])
+  @@unique([permisionVersionId, name])
 }
 
 model Session {
-  token   String   @id
-  expires DateTime
-
+  token     String   @id
+  expires   DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-
-  userId String
-  User   User   @relation(fields: [userId], references: [id])
+  userId    String
+  User      User     @relation(fields: [userId], references: [id])
 }
