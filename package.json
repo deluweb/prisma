@@ -6,8 +6,8 @@
   "scripts": {
     "db:introspect": "dotenv -- prisma introspect",
     "db:generate": "dotenv -- prisma generate",
-    "deploy":"npm install && git add . && git commit -m 'new release' && git push",
-    "postinstall": "tsc && npx shx cp src/index.d.ts dist/index.d.ts && npx prisma@4.8.0 generate",
+    "build":"tsc && npx shx cp src/index.d.ts dist/index.d.ts",
+    "postinstall": "npx prisma@4.8.0 generate",
     "test": "exit 0"
   },
   "publishConfig": {
