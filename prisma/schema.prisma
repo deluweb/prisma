@@ -72,7 +72,7 @@ model WebsitePlugin {
 
 model Provider {
   id   String @id @default(cuid())
-  name String @unique
+  name1 String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -129,7 +129,7 @@ model Account {
 
 model Role {
   id           String  @id @default(cuid())
-  name         String
+  name2         String
   redirect_uri String  @default("/")
   weight       Int     @default(0)
   default      Boolean
@@ -144,13 +144,13 @@ model Role {
   Users      User[]
   Permisions LibraryPermission[]
 
-  @@unique([websiteId, name])
+  @@unique([websiteId, name2])
   @@unique([websiteId, weight])
 }
 
 model Library {
   id   String @id @default(cuid())
-  name String @unique
+  name3 String @unique
   sub  String @unique
 
   createdAt DateTime @default(now())
@@ -164,7 +164,7 @@ model Library {
 
 model LibraryPlugin {
   id   String @id @default(cuid())
-  name String @unique
+  name4 String @unique
   sub  String @unique
 
   createdAt DateTime @default(now())
@@ -193,7 +193,7 @@ model LibraryPluginVersion {
 
 model LibraryTheme {
   id   String @id @default(cuid())
-  name String @unique
+  name5 String @unique
   sub  String @unique
 
   createdAt DateTime @default(now())
@@ -252,7 +252,7 @@ model LibraryPermissionVersion {
 
 model LibraryPermission {
   id   String @id @default(cuid())
-  name String
+  name6 String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -262,7 +262,7 @@ model LibraryPermission {
 
   Roles Role[]
 
-  @@unique([permisionVersionId, name])
+  @@unique([permisionVersionId, name6])
 }
 
 model Session {
